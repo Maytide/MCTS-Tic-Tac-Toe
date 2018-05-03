@@ -3,4 +3,3 @@ from Board import Player, Board, Position
 
 class MonteCarloTreeSearch():
 
-    

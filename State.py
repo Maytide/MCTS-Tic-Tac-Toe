@@ -34,6 +34,9 @@ class State():
 
         return 1
 
+    def add_score(self, score):
+        self.win_score += score
+
     def increment_visit(self):
         self.visit_count += 1
 
