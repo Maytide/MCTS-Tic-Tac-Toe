@@ -10,6 +10,10 @@ class T():
     D = 3  # Draw
     num_to_symbol = {E: 'E', X: 'X', O: 'O', D: 'D'}
 
+    @staticmethod
+    def opponent_of(P):
+        return T.X if P == 2 else T.O
+
 class Position():
     def __init__(self, i, j):
         self.i = i
