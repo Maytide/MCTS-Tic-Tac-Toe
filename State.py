@@ -14,12 +14,13 @@ class State():
 
     def get_all_possible_states(self):
         availible_positions = self.board.get_empty_positions()
+        # print('[State.get_all_possible_states]:', availible_positions)
         possible_states = []
 
         for position in availible_positions:
-            player = 1 if self.player == 2 else 2
+            player = Player(T.X) if self.player == Player(T.O) else Player(T.O)
             new_state = State(self.board, player)
-            new_state.board.perform_move(position, player)
+            new_state.board.perform_move(player, position)
             possible_states.append(new_state)
 
         return possible_states

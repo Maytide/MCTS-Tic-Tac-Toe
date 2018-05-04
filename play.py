@@ -8,9 +8,14 @@ def play_vs_AI(n=3):
     player = Player(T.X)
     mcts = MonteCarloTreeSearch()
     
-    board.perform_move(player, Position(0,0))
-    board.print_board()
+    # board.perform_move(player, Position(0,0))
+    # board.print_board()
 
-    mcts.find_next_move(board, player)
+    print('AI turn:')
+    board.print_board()
+    while board.check_status() == T.E:
+        print('[play.py]:', T.num_to_symbol[board.check_status()])
+        board = mcts.find_next_move(board, player)
+        board.print_board()
 
 play_vs_AI()

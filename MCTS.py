@@ -1,3 +1,4 @@
+import sys
 import time
 from State import State, Tree, Node
 from Board import Player, Board, Position, T
@@ -21,10 +22,16 @@ class MonteCarloTreeSearch():
         tree = Tree(Node(State(board, self.opponent), None))
         reference_time = current_time()
         root_node = tree.root
+        root_node.state.visit_count = 1
 
         while (current_time() - reference_time) <= MonteCarloTreeSearch.time_limit_per_move + epsilon:
+            print('[MCTS.find_nextMove]:', current_time() - reference_time, MonteCarloTreeSearch.time_limit_per_move + epsilon)
             # -- Step 1 - Selection --
+            # print('[MCTS.find_nextMove]:', root_node, root_node.children)
+            if root_node in root_node.children:
+                raise ValueError('Circular reference')
             promising_node = self.select_promising_node(root_node)
+            # print('[MCTS.find_nextMove]:', promising_node.children)
             # -- Step 2 - Expansion -- 
             if promising_node.state.board.check_status() == T.E:
                 # game in progress
@@ -37,17 +44,26 @@ class MonteCarloTreeSearch():
 
             # simulate random playout
             playout_result = self.simulate_random_playout(exploration_node)
+            if playout_result == T.X or playout_result == T.O:
+                playout_result = Player(playout_result)
             # -- Step 4 - Update -- 
             self.backpropogate(exploration_node, playout_result)
-        
-        winner_node = root_node.get_child_with_max_score()  
+
+        winner_node = root_node.get_child_with_max_score()
         tree.root = winner_node
-        return winner_node.state.board  
+        return winner_node.state.board
 
     def select_promising_node(self, root_node):
         node = root_node
+        print('[MCTS.select_promising_node]:', )
+        if root_node in root_node.children:
+            raise ValueError('Circular reference root')
         while not node.is_leaf():
             node = find_best_node_uct(node)
+            print('[MCTS.select_promising_node]:', node.state.visit_count, node, node.children)
+			# TODO: why is node in its own children list?
+            if node in node.children:
+                raise ValueError('Circular reference')
         
         return node
 
@@ -60,7 +76,8 @@ class MonteCarloTreeSearch():
             # .parent
             new_node = Node(state, parent_node)
             new_node.state.player = parent_node.state.get_opponent()
-            parent_node.children.append(new_node)
+            parent_node.add_child(new_node)
+            # print(parent_node == new_node, parent_node, parent_node.children)
             Node.node_count += 1
         return 1
 

@@ -7,8 +7,16 @@ __all__ = ['uct', 'find_best_node_uct']
 def uct(parent_visit, node_win_count, node_visit):
     if node_visit == 0:
         return sys.maxsize
+    if parent_visit == 0:
+        # raise ValueError('Parent visit was zero! this should not happen if this node is called.')
+        return -sys.maxsize
 
-    return node_win_count/node_visit + 1.41*sqrt(log(parent_visit) / node_visit)
+    try:
+        return node_win_count/node_visit + 1.41*sqrt(log(parent_visit) / node_visit)
+    except ValueError as ve:
+        print('ValueError:', ve)
+        print('parent_visit:', parent_visit, 'node_win_count:', node_win_count, 'node_visit:', node_visit)
+        raise ValueError
 
 def find_best_node_uct(parent_node):
     parent_visit = parent_node.state.visit_count
@@ -20,5 +28,6 @@ def find_best_node_uct(parent_node):
             max_uct_score = uct_score
             max_child_node = child_node
 
+    # print('[UCT.find_best_node_uct]:', parent_node, max_child_node)
     return max_child_node
 
