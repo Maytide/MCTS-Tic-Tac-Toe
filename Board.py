@@ -9,26 +9,14 @@ class T():
     O = 2  # O square (or win)
     D = 3  # Draw
     num_to_symbol = {E: 'E', X: 'X', O: 'O', D: 'D'}
-
+    
     @staticmethod
     def opponent_of(P):
-        return T.X if P == 2 else T.O
+        return Player(T.X) if P == T.O else T.O
 
 class Position():
     def __init__(self, i, j):
         self.i = i
-        self.j = j
-
-    def get_i(self):
-        return self.i
-
-    def get_j(self):
-        return self.j
-
-    def set_i(self, i):
-        self.i = i
-
-    def set_j(self, j):
         self.j = j
 
     def __str__(self):
@@ -40,6 +28,14 @@ class Player():
             self.P = T.X  # X
         else:
             self.P = T.O  # O
+
+    def __eq__(self, other):
+        if isinstance(other, int):
+            return self.P == other
+        elif isinstance(other, Player):
+            return self.P == other.P
+        else:
+            return False
 
 class Board():
     def __init__(self, n=3):
@@ -54,9 +50,9 @@ class Board():
         pass
 
     def perform_move(self, player, pos):
-        if self.board[pos.get_i()][pos.get_j()] == T.E:
+        if self.board[pos.i][pos.j] == T.E:
             self.total_moves += 1
-            self.board[pos.get_i()][pos.get_j()] = player.P
+            self.board[pos.i][pos.j] = player.P
             return +1
         else:
             return -1
