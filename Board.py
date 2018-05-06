@@ -29,6 +29,15 @@ class Player():
         else:
             self.P = T.O  # O
 
+    @classmethod
+    def new_player(cls, player):
+        if isinstance(player, int):
+            return cls(player)
+        elif isinstance(player, Player):
+            return cls(player.P)
+        else:
+            raise ValueError('Passed argument of type', type(player), 'to Player constructor.')
+
     def __eq__(self, other):
         if isinstance(other, int):
             return self.P == other
@@ -38,21 +47,25 @@ class Player():
             return False
 
 class Board():
-    def __init__(self, n=3):
-        self.status = 0
-
-        self.total_moves = 0
+    def __init__(self, status=0, total_moves=0, n=3, board=None):
+        self.status = status
+        self.total_moves = total_moves
         self.n = n
-        self.board = [[T.E for __ in range(self.n)] for _ in range(self.n)]
+        if board is None:
+            self.board = [[T.E for __ in range(self.n)] for _ in range(self.n)]
+        else:
+            self.board = board
 
     @classmethod
-    def from_existing_board(cls):
-        pass
+    def new_board(cls, board):
+        new_board = [[item for item in row] for row in board.board]
+        return cls(board.status, board.total_moves, board.n, new_board)
 
     def perform_move(self, player, pos):
         if self.board[pos.i][pos.j] == T.E:
             self.total_moves += 1
             self.board[pos.i][pos.j] = player.P
+            self.print_board()
             return +1
         else:
             return -1
@@ -98,7 +111,7 @@ class Board():
         Checks if all the elements in a row/col/diag are equal.
         https://stackoverflow.com/questions/3844801/check-if-all-elements-in-a-list-are-identical
         """
-        return vector[0] if len(set(vector)) <= 1 else T.E
+        return vector[0] if (vector[0] != T.E) and (len(set(vector)) == 1) else T.E
 
     def print_board(self, mode='num'):
         print('Move number:', self.total_moves)

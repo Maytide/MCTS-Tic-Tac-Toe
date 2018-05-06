@@ -25,7 +25,7 @@ class MonteCarloTreeSearch():
         root_node.state.visit_count = 1
 
         while (current_time() - reference_time) <= MonteCarloTreeSearch.time_limit_per_move + epsilon:
-            print('[MCTS.find_nextMove]:', current_time() - reference_time, MonteCarloTreeSearch.time_limit_per_move + epsilon)
+            print('[MCTS.find_nextMove]:', current_time() - reference_time, MonteCarloTreeSearch.time_limit_per_move + epsilon,)
             # -- Step 1 - Selection --
             # print('[MCTS.find_nextMove]:', root_node, root_node.children)
             if root_node in root_node.children:
@@ -33,6 +33,9 @@ class MonteCarloTreeSearch():
             promising_node = self.select_promising_node(root_node)
             # print('[MCTS.find_nextMove]:', promising_node.children)
             # -- Step 2 - Expansion -- 
+            print('[MCTS.find_nextMove] - Board status:', promising_node.state.board.check_status())
+            # promising_node.state.board.print_board()
+            # Why is board status == 1 so early on?
             if promising_node.state.board.check_status() == T.E:
                 # game in progress
                 self.expand_node(promising_node)
@@ -48,6 +51,7 @@ class MonteCarloTreeSearch():
                 playout_result = Player(playout_result)
             # -- Step 4 - Update -- 
             self.backpropogate(exploration_node, playout_result)
+            print('[MCTS.find_next_move]', exploration_node, exploration_node.children)
 
         winner_node = root_node.get_child_with_max_score()
         tree.root = winner_node
@@ -56,7 +60,7 @@ class MonteCarloTreeSearch():
     def select_promising_node(self, root_node):
         node = root_node
         print('[MCTS.select_promising_node]:', )
-        if root_node in root_node.children:
+        if node in node.children:
             raise ValueError('Circular reference root')
         while not node.is_leaf():
             node = find_best_node_uct(node)
@@ -74,10 +78,12 @@ class MonteCarloTreeSearch():
             # new node requires:
             # .state: board and player
             # .parent
-            new_node = Node(state, parent_node)
+            # new_node = Node(state, parent_node)
+            new_node = Node.new_node_from_state(state)
+            new_node.parent = parent_node
             new_node.state.player = parent_node.state.get_opponent()
             parent_node.add_child(new_node)
-            # print(parent_node == new_node, parent_node, parent_node.children)
+            print('[MCTS.expand_node]:', parent_node == new_node, parent_node, parent_node.children)
             Node.node_count += 1
         return 1
 
@@ -93,7 +99,7 @@ class MonteCarloTreeSearch():
         """
         Simulate a completely random game
         """
-        temp_node = Node.deep_copy(node)
+        temp_node = Node.new_node(node)
         temp_state = temp_node.state
         board_status = temp_state.board.check_status()
 
@@ -107,5 +113,6 @@ class MonteCarloTreeSearch():
             temp_state.toggle_player()
             temp_state.random_play()
             board_status = temp_state.board.check_status()
+        # temp_state.board.print_board()
         
         return board_status

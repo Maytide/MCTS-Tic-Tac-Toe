@@ -11,6 +11,18 @@ class State():
         self.player = player            # int player; // X is 1, O is 2
         self.visit_count = visit_count  # number of times this node visited
         self.win_score = win_score      # sum of count of winning child nodes
+        
+        if isinstance(self.player, int):
+            self.player = Player(self.player)
+
+    @classmethod
+    def new_state(cls, state):
+        new_board = Board.new_board(state.board)
+        return cls(new_board, state.player, state.visit_count, state.win_score)
+    
+    def new_state_from_board(self, board):
+        new_board = Board.new_board(board)
+        return State(new_board, self.player, self.visit_count, self.win_score)
 
     def get_all_possible_states(self):
         availible_positions = self.board.get_empty_positions()
@@ -18,8 +30,9 @@ class State():
         possible_states = []
 
         for position in availible_positions:
-            player = Player(T.X) if self.player == Player(T.O) else Player(T.O)
-            new_state = State(self.board, player)
+            player = Player.new_player(T.X) if self.player == Player.new_player(T.O) else Player.new_player(T.O)
+            new_state = self.new_state_from_board(self.board)
+            new_state.player = Player.new_player(self.get_opponent())
             new_state.board.perform_move(player, position)
             possible_states.append(new_state)
 
@@ -31,7 +44,7 @@ class State():
         move = availible_positions[
             random.randint(0, len(availible_positions)-1)
         ]
-        self.board.perform_move(move)
+        self.board.perform_move(self.player, move)
 
         return 1
 
@@ -53,6 +66,22 @@ class Node():
         self.state = state
         self.parent = parent
         self.children = children
+
+    @classmethod
+    def new_node(cls, node):
+        # return cls(node.state, node.parent, node.children)
+        state = State.new_state(node.state)
+        parent = node.parent
+        print('[State.new_node]', node.parent, node, node.children)
+        children = [Node.new_node(child) for child in node.children]
+
+        return cls(state, parent, children)
+    
+    @classmethod
+    def new_node_from_state(cls, state):
+        parent = None
+        children = []
+        return cls(state, parent, children)
 
     def add_child(self, child_node):
         self.children.append(child_node)
@@ -78,10 +107,6 @@ class Node():
 
     def child_count(self):
         return len(self.children)
-
-    @classmethod
-    def deep_copy(cls, node):
-        return cls(node.state, node.parent, node.children)
 
 class Tree():
     def __init__(self, root):

@@ -10,7 +10,7 @@ def play_vs_AI(n=3):
     
     # board.perform_move(player, Position(0,0))
     # board.print_board()
-
+    
     print('AI turn:')
     board.print_board()
     while board.check_status() == T.E:

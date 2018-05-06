@@ -28,6 +28,6 @@ def find_best_node_uct(parent_node):
             max_uct_score = uct_score
             max_child_node = child_node
 
-    # print('[UCT.find_best_node_uct]:', parent_node, max_child_node)
+    print('[UCT.find_best_node_uct]:', max_uct_score, max_child_node)
     return max_child_node
 
