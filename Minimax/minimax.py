@@ -1,5 +1,4 @@
-from Board import Board, Position, T
-# board.check_for_win
+from Board import T
 
 
 class Minimax():

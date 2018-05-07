@@ -14,7 +14,5 @@ def AI_vs_AI(n=3):
         _, board = minimax.find_next_move(board, player)
         player = T.opponent_of(player)
         board.print_board()
-        # tree.print_tree_boards()
-        pass
 
 AI_vs_AI()
