@@ -2,7 +2,7 @@
 Reference: http://www.baeldung.com/java-monte-carlo-tree-search
 """
 import random
-from Board import Player, Board, Position, T
+from Board import Board, Position, T
 
 
 class State():
@@ -11,9 +11,6 @@ class State():
         self.player = player            # int player; // X is 1, O is 2
         self.visit_count = visit_count  # number of times this node visited
         self.win_score = win_score      # sum of count of winning child nodes
-        
-        if isinstance(self.player, int):
-            self.player = Player(self.player)
 
     @classmethod
     def new_state(cls, state):
@@ -30,9 +27,9 @@ class State():
         possible_states = []
 
         for position in availible_positions:
-            player = Player.new_player(T.X) if self.player == Player.new_player(T.O) else Player.new_player(T.O)
+            player = T.X if self.player == T.O else T.O
             new_state = self.new_state_from_board(self.board)
-            new_state.player = Player.new_player(self.get_opponent())
+            new_state.player = self.get_opponent()
             new_state.board.perform_move(player, position)
             possible_states.append(new_state)
 
@@ -72,7 +69,7 @@ class Node():
         # return cls(node.state, node.parent, node.children)
         state = State.new_state(node.state)
         parent = node.parent
-        print('[State.new_node]', node.parent, node, node.children)
+        # print('[State.new_node]', node.parent, node, node.children)
         children = [Node.new_node(child) for child in node.children]
 
         return cls(state, parent, children)
@@ -108,6 +105,13 @@ class Node():
     def child_count(self):
         return len(self.children)
 
+    def print_board(self):
+        self.state.board.print_board()
+
 class Tree():
     def __init__(self, root):
         self.root = root
+
+    def print_tree_boards(self):
+        for node in self.root.children:
+            node.print_board()

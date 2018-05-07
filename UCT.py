@@ -24,10 +24,10 @@ def find_best_node_uct(parent_node):
     max_uct_score = -sys.maxsize
     for child_node in parent_node.children:
         uct_score = uct(parent_visit, child_node.state.win_score, child_node.state.visit_count)
-        if uct_score > max_uct_score:
+        if uct_score >= max_uct_score:
             max_uct_score = uct_score
             max_child_node = child_node
 
-    print('[UCT.find_best_node_uct]:', max_uct_score, max_child_node)
+    # print('[UCT.find_best_node_uct]:', max_uct_score, max_child_node)
     return max_child_node
 

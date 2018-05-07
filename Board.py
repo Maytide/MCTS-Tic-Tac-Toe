@@ -12,7 +12,7 @@ class T():
     
     @staticmethod
     def opponent_of(P):
-        return Player(T.X) if P == T.O else T.O
+        return T.X if P == T.O else T.O
 
 class Position():
     def __init__(self, i, j):
@@ -22,29 +22,29 @@ class Position():
     def __str__(self):
         return '[%d, %d]' % (self.i, self.j)
 
-class Player():
-    def __init__(self, symbol):
-        if symbol == 'X' or symbol == 1:
-            self.P = T.X  # X
-        else:
-            self.P = T.O  # O
+# class Player():
+#     def __init__(self, symbol):
+#         if symbol == 'X' or symbol == 1:
+#             self.P = T.X  # X
+#         else:
+#             self.P = T.O  # O
 
-    @classmethod
-    def new_player(cls, player):
-        if isinstance(player, int):
-            return cls(player)
-        elif isinstance(player, Player):
-            return cls(player.P)
-        else:
-            raise ValueError('Passed argument of type', type(player), 'to Player constructor.')
+#     @classmethod
+#     def new_player(cls, player):
+#         if isinstance(player, int):
+#             return cls(player)
+#         elif isinstance(player, Player):
+#             return cls(player.P)
+#         else:
+#             raise ValueError('Passed argument of type', type(player), 'to Player constructor.')
 
-    def __eq__(self, other):
-        if isinstance(other, int):
-            return self.P == other
-        elif isinstance(other, Player):
-            return self.P == other.P
-        else:
-            return False
+#     def __eq__(self, other):
+#         if isinstance(other, int):
+#             return self.P == other
+#         elif isinstance(other, Player):
+#             return self.P == other.P
+#         else:
+#             return False
 
 class Board():
     def __init__(self, status=0, total_moves=0, n=3, board=None):
@@ -64,8 +64,8 @@ class Board():
     def perform_move(self, player, pos):
         if self.board[pos.i][pos.j] == T.E:
             self.total_moves += 1
-            self.board[pos.i][pos.j] = player.P
-            self.print_board()
+            self.board[pos.i][pos.j] = player
+            # self.print_board()
             return +1
         else:
             return -1
