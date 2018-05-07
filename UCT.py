@@ -4,7 +4,7 @@ from State import State, Node
 
 __all__ = ['uct', 'find_best_node_uct']
 
-def uct(parent_visit, node_win_count, node_visit):
+def uct(parent_visit, node_win_score, node_visit):
     if node_visit == 0:
         return sys.maxsize
     if parent_visit == 0:
@@ -13,10 +13,10 @@ def uct(parent_visit, node_win_count, node_visit):
         # return -sys.maxsize
 
     try:
-        return node_win_count/node_visit + 1.41*sqrt(log(parent_visit) / node_visit)
+        return node_win_score / node_visit + 3.16 * sqrt(log(parent_visit) / node_visit)
     except ValueError as ve:
         print('ValueError:', ve)
-        print('parent_visit:', parent_visit, 'node_win_count:', node_win_count, 'node_visit:', node_visit)
+        print('parent_visit:', parent_visit, 'node_win_count:', node_win_score, 'node_visit:', node_visit)
         raise ValueError
 
 def find_best_node_uct(parent_node):

@@ -11,7 +11,7 @@ epsilon = 1e-6
 
 class MonteCarloTreeSearch():
     WIN_SCORE = 10
-    time_limit_per_move = 5
+    time_limit_per_move = 3
     def __init__(self):
         self.opponent = None #T.X
     
@@ -99,6 +99,8 @@ class MonteCarloTreeSearch():
             temp_node.state.increment_visit()
             if temp_node.state.player == player:
                 temp_node.state.add_score(MonteCarloTreeSearch.WIN_SCORE)
+            elif temp_node.state.player == T.opponent_of(player):
+                temp_node.state.add_score(-MonteCarloTreeSearch.WIN_SCORE)
             temp_node = temp_node.parent
 
     def simulate_random_playout(self, node):
