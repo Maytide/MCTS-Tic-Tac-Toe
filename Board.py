@@ -70,6 +70,15 @@ class Board():
         else:
             return -1
 
+    def unperform_move(self, empty_symbol, pos):
+        if self.board[pos.i][pos.j] != T.E:
+            self.total_moves -= 1
+            self.board[pos.i][pos.j] = empty_symbol
+            # self.print_board()
+            return +1
+        else:
+            return -1
+
     def get_board(self):
         return self.board
 

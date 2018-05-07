@@ -1,6 +1,6 @@
 from Board import Board, T
 from State import Position
-from MCTS import MonteCarloTreeSearch
+from MCTS.MCTS import MonteCarloTreeSearch
 
 
 def AI_vs_AI(n=3):
@@ -15,7 +15,7 @@ def AI_vs_AI(n=3):
     print('AI turn:')
     board.print_board()
     while board.check_status() == T.E:
-        print('[play.py]:', T.num_to_symbol[board.check_status()])
+        print('[play_mcts.py]:', T.num_to_symbol[board.check_status()])
         tree, board = mcts.find_next_move(board, player)
         player = T.opponent_of(player)
         board.print_board()
@@ -50,5 +50,5 @@ def player_vs_AI(n=3):
         board.print_board()
         player = T.opponent_of(player)
 
-# AI_vs_AI()
-player_vs_AI()
+AI_vs_AI()
+# player_vs_AI()

@@ -1,9 +1,9 @@
 import sys
 import time
-from State import State, Tree, Node
-from Board import Board, Position, T
-from UCT import *
 
+from Board import T
+from MCTS.UCT import *
+from State import State, Tree, Node
 
 # https://stackoverflow.com/questions/5998245/get-current-time-in-milliseconds-in-python
 current_time = lambda: int(round(time.time()))
@@ -27,16 +27,16 @@ class MonteCarloTreeSearch():
         reference_time = current_time()
 
         while (current_time() - reference_time) <= (MonteCarloTreeSearch.time_limit_per_move):
-            # print('[MCTS.find_nextMove]:', current_time() - reference_time, MonteCarloTreeSearch.time_limit_per_move + epsilon,)
+            # print('[Tic Tac Toe.find_nextMove]:', current_time() - reference_time, MonteCarloTreeSearch.time_limit_per_move + epsilon,)
             # -- Step 1 - Selection --
-            # print('[MCTS.find_nextMove]:', root_node, root_node.children)
+            # print('[Tic Tac Toe.find_nextMove]:', root_node, root_node.children)
             if root_node in root_node.children:
                 raise ValueError('Circular reference')
             promising_node = self.select_promising_node(root_node)
-            # print('[MCTS.find_nextMove] - root board:', root_node.state.board.print_board())
-            # print('[MCTS.find_nextMove] - promising:', promising_node.state.board.print_board())
+            # print('[Tic Tac Toe.find_nextMove] - root board:', root_node.state.board.print_board())
+            # print('[Tic Tac Toe.find_nextMove] - promising:', promising_node.state.board.print_board())
             # -- Step 2 - Expansion -- 
-            # print('[MCTS.find_nextMove] - Board status:', promising_node.state.board.check_status())
+            # print('[Tic Tac Toe.find_nextMove] - Board status:', promising_node.state.board.check_status())
             # promising_node.state.board.print_board()
             # Why is board status == 1 so early on?
             if promising_node.state.board.check_status() == T.E:
@@ -52,25 +52,25 @@ class MonteCarloTreeSearch():
             playout_result = self.simulate_random_playout(exploration_node)
             # -- Step 4 - Update -- 
             self.backpropogate(exploration_node, playout_result)
-            # print('[MCTS.find_next_move]:')
+            # print('[Tic Tac Toe.find_next_move]:')
             # exploration_node.state.board.print_board()
-            # print('[MCTS.find_next_move]', exploration_node, exploration_node.children)
+            # print('[Tic Tac Toe.find_next_move]', exploration_node, exploration_node.children)
 
         # for node in root_node.children:
         #     node.state.board.print_board()
         winner_node = root_node.get_child_with_max_score()
-        # print('[MCTS.find_next_move]', winner_node, winner_node.state.win_score)
+        # print('[Tic Tac Toe.find_next_move]', winner_node, winner_node.state.win_score)
         tree.root = winner_node
         return tree, winner_node.state.board
 
     def select_promising_node(self, root_node):
         node = root_node
-        # print('[MCTS.select_promising_node]:', )
+        # print('[Tic Tac Toe.select_promising_node]:', )
         if node in node.children:
             raise ValueError('Circular reference root')
         while not node.is_leaf():
             node = find_best_node_uct(node)
-            # print('[MCTS.select_promising_node]:', node.state.visit_count, node, node.children)
+            # print('[Tic Tac Toe.select_promising_node]:', node.state.visit_count, node, node.children)
             if node in node.children:
                 raise ValueError('Circular reference')
         
@@ -88,7 +88,7 @@ class MonteCarloTreeSearch():
             new_node.parent = parent_node
             new_node.state.player = parent_node.state.get_opponent()
             parent_node.add_child(new_node)
-            # print('[MCTS.expand_node]:', parent_node == new_node, parent_node, parent_node.children)
+            # print('[Tic Tac Toe.expand_node]:', parent_node == new_node, parent_node, parent_node.children)
             Node.node_count += 1
 
         return 1
