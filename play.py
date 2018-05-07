@@ -35,6 +35,10 @@ def player_vs_AI(n=3):
             i, j = [int(k) for k in input_position.split(' ')]
             pos = Position(i, j)
             board.perform_move(player, pos)
+            if board.check_status() == T.X:
+                print('You win!')
+                board.print_board()
+                break
         else:
             tree, board = mcts.find_next_move(board, player)
 

@@ -9,7 +9,8 @@ def uct(parent_visit, node_win_count, node_visit):
         return sys.maxsize
     if parent_visit == 0:
         # raise ValueError('Parent visit was zero! this should not happen if this node is called.')
-        return -sys.maxsize
+        parent_visit = 1
+        # return -sys.maxsize
 
     try:
         return node_win_count/node_visit + 1.41*sqrt(log(parent_visit) / node_visit)

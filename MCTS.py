@@ -11,7 +11,7 @@ epsilon = 1e-6
 
 class MonteCarloTreeSearch():
     WIN_SCORE = 10
-    time_limit_per_move = 3
+    time_limit_per_move = 5
     def __init__(self):
         self.opponent = None #T.X
     
@@ -23,7 +23,7 @@ class MonteCarloTreeSearch():
         tree = Tree(Node(State(board, self.opponent), None))
         root_node = tree.root
         root_node.children = []
-        root_node.state.visit_count = 0
+        root_node.state.visit_count = 1
         reference_time = current_time()
 
         while (current_time() - reference_time) <= (MonteCarloTreeSearch.time_limit_per_move):
